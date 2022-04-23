@@ -3,6 +3,7 @@ package com.example.newsapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ public class RegistrationActivity extends AppCompatActivity {
     EditText editName;
     EditText editLogin;
     EditText editPassword;
+    CheckBox rbIsAdmin;
 
     DatabaseHelper databaseHelper;
 
@@ -31,6 +33,7 @@ public class RegistrationActivity extends AppCompatActivity {
         editName = findViewById(R.id.editName);
         editLogin = findViewById(R.id.editLogin);
         editPassword = findViewById(R.id.editPassword);
+        rbIsAdmin = findViewById(R.id.cbIsAdmin);
 
         databaseHelper = new DatabaseHelper(this);
 
@@ -39,23 +42,29 @@ public class RegistrationActivity extends AppCompatActivity {
                 boolean checkInsertData = databaseHelper.insertUser(
                         editLastname.getText().toString(),
                         editName.getText().toString(),
-                        isAdmin._false,
+                        rbIsAdmin.isChecked() ? 1 : 0,
                         editLogin.getText().toString(),
                         editPassword.getText().toString()
                 );
                 if (checkInsertData) {
                     Toast.makeText(getApplicationContext(),
                             "Решистрация прошла успешно!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    if (rbIsAdmin.isChecked()) {
+                        Intent intent = new Intent(this, AdminActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 } else
                     Toast.makeText(getApplicationContext(),
                             "Ошибка при регистрации!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        btnAuthorization.setOnClickListener(view ->{
+        btnAuthorization.setOnClickListener(view -> {
             Intent intent = new Intent(this, AuthorizationActivity.class);
             startActivity(intent);
             finish();
@@ -74,7 +83,7 @@ public class RegistrationActivity extends AppCompatActivity {
             editLogin.setError(error);
         else if (editPassword.getText().toString().isEmpty())
             editPassword.setError(error);
-        else if(!databaseHelper.isFreeLogin(editLogin.getText().toString().trim()))
+        else if (!databaseHelper.isFreeLogin(editLogin.getText().toString().trim()))
             editLogin.setError("Данный логин уже занят");
         else isValid = true;
 
