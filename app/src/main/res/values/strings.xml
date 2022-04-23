@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">NewsApp</string>
+    <string name="title_activity_admin">AdminActivity</string>
+    <string name="title_news">Новости</string>
+    <string name="title_addNews">Добавить</string>
+
+</resources>
